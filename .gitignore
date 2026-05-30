@@ -1,0 +1,22 @@
+# Environment & Secrets
+.env
+.env.local
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Data (runtime generated)
+data/database.sqlite
+data/uploads/*
+!data/uploads/.gitkeep
+data/logs/*
+!data/logs/.gitkeep
+
+# OS & IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,38 @@
+import aiosqlite
+import os
+
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'database.sqlite')
+
+async def init_db():
+    # Ensure data folder exists
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute('''
+            CREATE TABLE IF NOT EXISTS jobs (
+                id TEXT PRIMARY KEY,
+                status TEXT NOT NULL,
+                progress INTEGER DEFAULT 0,
+                filename TEXT NOT NULL,
+                target_lang TEXT DEFAULT 'en',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                completed_at TIMESTAMP,
+                error TEXT,
+                vtt_content TEXT,
+                srt_content TEXT,
+                video_meta_json TEXT,
+                timeline_json TEXT,
+                edited_srt_content TEXT,
+                edited_vtt_content TEXT,
+                segments_json TEXT
+            )
+        ''')
+        await db.commit()
+
+async def get_db():
+    db = await aiosqlite.connect(DB_PATH)
+    db.row_factory = aiosqlite.Row
+    try:
+        yield db
+    finally:
+        await db.close()

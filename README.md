@@ -4,6 +4,32 @@ Extracts word-level timestamps and power words from audio/video using AI transcr
 
 ---
 
+## Quick Start (One-Click Setup)
+
+Clone the repo, then double-click the launcher — everything else is automatic:
+
+```bash
+git clone https://github.com/samm329-ui/CaptionGen.git
+cd CaptionGen
+```
+
+| Platform | Action |
+|---|---|
+| **Windows** | Double-click `start.bat` |
+| **Linux / macOS** | Run `./start.sh` or `bash start.sh` |
+
+The launcher automatically:
+1. Checks Python is installed
+2. Creates a virtual environment
+3. Installs all Python dependencies
+4. Sets up the `.env` configuration file
+5. Finds or installs FFmpeg
+6. Starts the server and opens http://localhost:8000 in your browser
+
+On first run, you'll be prompted to add your `GROQ_API_KEY` in the `.env` file. Get a free key at https://console.groq.com/
+
+---
+
 ## Architecture
 
 Two-pass pipeline — transcription and alignment are decoupled:
@@ -283,24 +309,28 @@ Same as Windows/Linux — https://console.groq.com/
 
 ## Install and Run
 
-### 1. Copy the project
-
-Copy the `word-level-transcript-engine` folder to your machine via USB, download, git clone, or any method.
-
-### 2. Install Python dependencies
+### Option A: One-Click Setup (Recommended)
 
 ```bash
-cd word-level-transcript-engine
-pip install -r requirements.txt
+git clone https://github.com/samm329-ui/CaptionGen.git
+cd CaptionGen
 ```
 
-This installs all AI pipeline dependencies (whisperx, sentence-transformers, groq, librosa, etc.) and backend dependencies (fastapi, uvicorn, aiosqlite, etc.).
+- **Windows**: Double-click `start.bat`
+- **Linux / macOS**: Run `./start.sh`
 
-On first run, WhisperX and sentence-transformers will download their models (~2-3 GB total). This is automatic and only happens once.
+The launcher handles everything: venv creation, dependency installation, `.env` setup, FFmpeg detection, and server startup.
 
-### 3. Configure environment
+### Option B: Manual Setup
+
+If you prefer manual control:
 
 ```bash
+git clone https://github.com/samm329-ui/CaptionGen.git
+cd CaptionGen
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
 cp .env.template .env
 ```
 
@@ -314,11 +344,9 @@ FFMPEG_PATH=C:\ffmpeg\bin\ffmpeg.exe
 - **Linux**: `FFMPEG_PATH=/usr/bin/ffmpeg`
 - **macOS**: `FFMPEG_PATH=/opt/homebrew/bin/ffmpeg` (Apple Silicon) or `/usr/local/bin/ffmpeg` (Intel)
 
-### 4. Run the server
-
+Start the server:
 ```bash
-cd backend
-python -m uvicorn main:app --host 0.0.0.0 --port 8000
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
 ```
 
 Open http://localhost:8000 in your browser.
@@ -395,6 +423,8 @@ word-level-transcript-engine/
 │   ├── logs/                    # JSONL pipeline logs
 │   └── database.sqlite          # Job database (auto-created)
 │
+├── start.bat                    # Windows one-click launcher
+├── start.sh                     # Linux/macOS one-click launcher
 ├── requirements.txt             # Python dependencies
 ├── .env.template                # Environment variable template
 ├── .gitignore

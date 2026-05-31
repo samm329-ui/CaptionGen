@@ -1,0 +1,8 @@
+# Ensure Windows batch files always have CRLF
+*.bat text eol=crlf
+
+# Ensure shell scripts always have LF
+*.sh text eol=lf
+
+# Default: normalize to LF in repo, checkout as native line endings
+* text=auto

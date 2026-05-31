@@ -1,12 +1,14 @@
 import os
 import asyncio
 import logging
-from caption_engine.main import run_pipeline
 from .database import DB_PATH
 import aiosqlite
 from .progress import manager
 
 logger = logging.getLogger(__name__)
+
+# Lazy-loaded to avoid ML imports crashing server at startup
+run_pipeline = None
 
 async def update_job_status(job_id: str, status: str, progress: int = None, 
                             error: str = None, srt: str = None, vtt: str = None):
@@ -51,6 +53,11 @@ def run_pipeline_sync(job_id: str, video_path: str, target_lang: str):
     Synchronous wrapper to run the pipeline.
     This runs in a separate thread but needs to send async websocket messages.
     """
+    global run_pipeline
+    if run_pipeline is None:
+        from caption_engine.main import run_pipeline as _rp
+        run_pipeline = _rp
+
     # Create an event loop for the async connection manager
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
